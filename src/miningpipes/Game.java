@@ -17,8 +17,7 @@ public class Game {
     public final int gridWidth = 100;
     public final int gridHeight = 100;
     public final float scaleFactor = 3;
-    public final int windowWidth = 1000;
-    public final int windowHeight = 600;
+    
     public final int tileWidth = 8;
     public final int panSpeed = 10;
        
@@ -39,7 +38,7 @@ public class Game {
         protected void LoadContent()
         {
             
-            tileGrid = new Grid(gridWidth, gridHeight, tileWidth, scaleFactor, windowWidth, windowHeight);
+            tileGrid = new Grid(gridWidth, gridHeight, tileWidth, scaleFactor,  MiningPipes.windowWidth, MiningPipes.windowHeight);
         }
 
       
