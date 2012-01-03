@@ -1,9 +1,9 @@
 package miningpipes;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 /*
  * To change this template, choose Tools | Templates
@@ -18,27 +18,27 @@ import java.awt.Point;
         public int gridHeight;
 
 
-        protected float scaleFactor;
-
-        protected int viewWidth;
-        protected int viewHeight;
-        protected int tileWidth;
-
         protected Tile[][] tileGrid;
 
-
-        public int getTilePixels()
+        
+        public Tile getTile(Point p)
         {
-             return (int)(tileWidth * scaleFactor);
+            return getTile(p.x,p.y);
         }
-        public Grid(int GridWidth, int GridHeight, int TileWidth, float ScaleFactor, int ViewWidth, int ViewHeight)
+
+        public Tile getTile(int i, int j)
+        {
+            return tileGrid[i][j];
+        }
+        
+        public int getTilePixels(int w, int s)
+        {
+             return (int)(w * s);
+        }
+        public Grid(int GridWidth, int GridHeight)
         {
             gridWidth = GridWidth;
             gridHeight = GridHeight;
-            scaleFactor = ScaleFactor;
-            viewWidth = ViewWidth;
-            viewHeight = ViewHeight;
-            tileWidth = TileWidth;
 
             tileGrid = new Tile[GridWidth][GridHeight];
 
@@ -46,7 +46,7 @@ import java.awt.Point;
             {
                 for (int j = 0; j < gridHeight; j++)
                 {
-                    tileGrid[i][j] = new Tile(1);
+                    tileGrid[i][j] = new Tile(10);
                 }
             }
 
@@ -57,14 +57,16 @@ import java.awt.Point;
             return !(x >= gridWidth || x < 0 || y >= gridHeight || y < 0);
         }
 
-        public void Draw(Image g, Vector2 ViewWindow)
+        public void Draw(BufferedImage g, Vector2 ViewWindow,int vW, int vH,float sF,int tP)
         {
+                   
+            
 
-            int xOffset = pixelsFromFloat(ViewWindow.x);
-            int yOffset = pixelsFromFloat(ViewWindow.y);
+            int xOffset = pixelsFromFloat(ViewWindow.x,tP);
+            int yOffset = pixelsFromFloat(ViewWindow.y,tP);
 
-            int xTilesOnscreen = (int)Math.ceil((viewWidth + xOffset) / (double)getTilePixels());
-            int yTilesOnscreen = (int)Math.ceil((viewHeight + yOffset) / (double)getTilePixels());
+            int xTilesOnscreen = (int)Math.ceil((vW + xOffset) / (double)tP);
+            int yTilesOnscreen = (int)Math.ceil((vH + yOffset) / (double)tP);
               
             int xStart = Math.max((int)Math.floor(ViewWindow.x), 0);
             int yStart = Math.max((int)Math.floor(ViewWindow.y), 0);
@@ -72,13 +74,13 @@ import java.awt.Point;
             int gridStartX = 0;
             if (ViewWindow.x < 0)
             {
-                xOffset = -1 * (getTilePixels() - xOffset);
+                xOffset = -1 * (tP - xOffset);
                 gridStartX = (int)Math.ceil(ViewWindow.x);
             }
             int gridStartY = 0;
             if (ViewWindow.y < 0)
             {
-                yOffset = -1 * (getTilePixels() - yOffset);
+                yOffset = -1 * (tP - yOffset);
                 gridStartY = (int)Math.ceil(ViewWindow.y);
             }
 
@@ -92,12 +94,28 @@ import java.awt.Point;
                 for (int j = yStart; j < yTilesToDraw + yStart; j++)
                 {
 
-
-                    drawTile(g, i, j, xOffset + (int)(xStart * getTilePixels()) + (int)(gridStartX * getTilePixels()), yOffset + (int)(yStart * getTilePixels()) + (int)(gridStartY * getTilePixels()));
+                    drawTile(g, i, j, xOffset + (int)(xStart * tP) + (int)(gridStartX * tP), yOffset + (int)(yStart * tP) + (int)(gridStartY * tP),tP,sF);
                 }
             }
+            Point p = tileFromScreenCoord(MiningPipes.thisMouse.get(),ViewWindow,tP);
+            Graphics bg = g.getGraphics();
+            bg.drawRect(tP * (p.x-xStart) - xOffset, tP * (p.y - yStart) - yOffset,tP,tP);
+            
             return;
         }
+        
+        public Point getScreenCoordFromTile(int x, int y,Vector2 ViewWindow,int tP)
+        {
+            
+            int xOffset = pixelsFromFloat(ViewWindow.x,tP);
+            int yOffset = pixelsFromFloat(ViewWindow.y,tP);
+            int xStart = Math.max((int)Math.floor(ViewWindow.x), 0);
+            int yStart = Math.max((int)Math.floor(ViewWindow.y), 0);
+            Point p = tileFromScreenCoord(new Point(x,y),ViewWindow,tP);
+            return new Point(tP * (p.x-xStart) - xOffset, tP * (p.y - yStart) - yOffset);
+            
+        }
+        
         public void changeBlock(int x, int y, Tile tile)
         {
             if (tileIsInGrid(x, y))
@@ -110,31 +128,31 @@ import java.awt.Point;
         {
             changeBlock(coords.x, coords.y, tile);
         }
-        public Point tileFromScreenCoord(Point coord, Vector2 viewWindow)
+        public Point tileFromScreenCoord(Point coord, Vector2 viewWindow, int tP)
         {
             Point tileCoord = new Point();
 
 
-            coord.x /= getTilePixels();
+            coord.x /= tP;
             coord.x += viewWindow.x;
-            coord.y /= getTilePixels();
+            coord.y /= tP;
             coord.y += viewWindow.y;
 
             tileCoord.x = (int)Math.floor(coord.x);
             tileCoord.y = (int)Math.floor(coord.y);
             return tileCoord;
         }
-        protected void drawTile(Image im, int i, int j, int xOffset, int yOffset)
+        protected void drawTile(BufferedImage im, int i, int j, int xOffset, int yOffset, int tP,float sF)
         {
             Graphics g = im.getGraphics();
-            this.tileGrid[i][j].drawTile(i, j,new Vector2(getTilePixels() * i - xOffset, getTilePixels() * j - yOffset),g);
+            this.tileGrid[i][j].drawTile(i, j,new Vector2(tP * i - xOffset, tP * j - yOffset),g,sF);
 
 
             return;
         }
-        protected int pixelsFromFloat(float location)
+        protected int pixelsFromFloat(float location, int tP)
         {
-            return (int)Math.round(getTilePixels() * (location - Math.floor(location)));
+            return (int)Math.round(tP * (location - Math.floor(location)));
         }
     }
 

@@ -22,13 +22,13 @@ public class Vector2 {
     }
     
     public void add(float X, float Y){
-        x+=X;
-        y+=Y;
+        x = x + X;
+        y = y + Y;
     }
     
     public void add(Vector2 vect){
-        x+=vect.x;
-        y+=vect.y;
+        x += vect.x;
+        y += vect.y;
     }
     
     public void times(float f){
@@ -36,5 +36,7 @@ public class Vector2 {
         y*=f;
     }
     
-    public static Vector2 Zero = new Vector2(0,0);
+    public static Vector2 Zero(){
+        return new Vector2(0,0);
+    }
 }

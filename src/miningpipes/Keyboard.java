@@ -19,6 +19,7 @@ public class Keyboard extends KeyAdapter {
     
     public void keyPressed(KeyEvent e){
         keys[e.getKeyCode()]=true;
+        MiningPipes.tm.keyPressed(e);
     }
     
     public void keyReleased(KeyEvent e){

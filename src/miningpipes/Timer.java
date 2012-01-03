@@ -53,7 +53,7 @@ public class Timer
         {
             tempList[i]=listenerList[i];
         }
-        
+        tempList[Array.getLength(tempList)-1]=tl;
         listenerList = tempList;
     }
     
