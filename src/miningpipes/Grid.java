@@ -1,5 +1,6 @@
 package miningpipes;
 
+import Util.Vector2;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -28,6 +29,8 @@ import java.awt.image.BufferedImage;
 
         public Tile getTile(int i, int j)
         {
+            if(i>gridWidth-1||i<0|j>gridHeight-1||j<0)
+                return null;
             return tileGrid[i][j];
         }
         
@@ -97,14 +100,12 @@ import java.awt.image.BufferedImage;
                     drawTile(g, i, j, xOffset + (int)(xStart * tP) + (int)(gridStartX * tP), yOffset + (int)(yStart * tP) + (int)(gridStartY * tP),tP,sF);
                 }
             }
-            Point p = tileFromScreenCoord(MiningPipes.thisMouse.get(),ViewWindow,tP);
-            Graphics bg = g.getGraphics();
-            bg.drawRect(tP * (p.x-xStart) - xOffset, tP * (p.y - yStart) - yOffset,tP,tP);
+            
             
             return;
         }
         
-        public Point getScreenCoordFromTile(int x, int y,Vector2 ViewWindow,int tP)
+       /* public Point getScreenCoordFromTile(int x, int y,Vector2 ViewWindow,int tP)
         {
             
             int xOffset = pixelsFromFloat(ViewWindow.x,tP);
@@ -113,6 +114,17 @@ import java.awt.image.BufferedImage;
             int yStart = Math.max((int)Math.floor(ViewWindow.y), 0);
             Point p = tileFromScreenCoord(new Point(x,y),ViewWindow,tP);
             return new Point(tP * (p.x-xStart) - xOffset, tP * (p.y - yStart) - yOffset);
+            
+        }*/
+        public Point getScreenCoordFromTile(Vector2 v,Vector2 ViewWindow,int tP)
+        {
+            return new Point((int)((v.x-ViewWindow.x)*tP),(int)((v.y-ViewWindow.y)*tP));
+            
+        }
+        
+        public Point getScreenCoordFromTile(Point p,Vector2 ViewWindow,int tP)
+        {
+            return new Point((int)((p.x-ViewWindow.x)*tP),(int)((p.y-ViewWindow.y)*tP));
             
         }
         
@@ -132,14 +144,29 @@ import java.awt.image.BufferedImage;
         {
             Point tileCoord = new Point();
 
+            tileCoord.x = coord.x;
+            tileCoord.y = coord.y;        
 
-            coord.x /= tP;
-            coord.x += viewWindow.x;
-            coord.y /= tP;
-            coord.y += viewWindow.y;
+            tileCoord.x /= tP;
+            tileCoord.x += viewWindow.x;
+            tileCoord.y /= tP;
+            tileCoord.y += viewWindow.y;
 
-            tileCoord.x = (int)Math.floor(coord.x);
-            tileCoord.y = (int)Math.floor(coord.y);
+            tileCoord.x = (int)Math.floor(tileCoord.x);
+            tileCoord.y = (int)Math.floor(tileCoord.y);
+            return tileCoord;
+        }
+        public Vector2 tileFromScreenCoord(Vector2 coord, Vector2 viewWindow, int tP)
+        {
+            Vector2 tileCoord = new Vector2(0,0);
+
+            tileCoord.x = coord.x;
+            tileCoord.y = coord.y;        
+
+            tileCoord.x /= tP;
+            tileCoord.x += viewWindow.x;
+            tileCoord.y /= tP;
+            tileCoord.y += viewWindow.y;
             return tileCoord;
         }
         protected void drawTile(BufferedImage im, int i, int j, int xOffset, int yOffset, int tP,float sF)

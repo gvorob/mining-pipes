@@ -4,9 +4,16 @@
  */
 package miningpipes;
 
+import Util.StaticImageObserver;
+import Util.Timer;
+import Util.TimerListener;
+import Util.TimerMiddleman;
+import Util.Screen;
+import Util.Keyboard;
+import Util.Mouse;
+import Util.ImageLoader;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.IOException;
 
 /**
  *
@@ -38,11 +45,9 @@ public class MiningPipes implements TimerListener{
         im = new ImageLoader();
         theScreen = new Screen(windowWidth,windowHeight);
         cursor = t.getImage("src/cursor.png");
-        thisMouse = new Mouse();
         thisKeyboard = new Keyboard();
-        
-        try{theGame = new Game();}
-        catch(Exception e){System.out.println("game constructor exception");}
+        thisMouse = new Mouse();
+        theGame = new Game(thisMouse);
         
         theTimer = new Timer(updateTime);
         

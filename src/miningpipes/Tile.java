@@ -4,22 +4,19 @@
  */
 package miningpipes;
 
+import Util.Vector2;
+import Util.ImageLoader;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import sun.awt.image.ToolkitImage;
 
 /**
  *
  * @author George
  */
-class Tile implements ImageObserver {
+public class Tile implements ImageObserver {
     
     static BufferedImage dirtTexture = new BufferedImage(8,8,BufferedImage.TYPE_4BYTE_ABGR);
     public static final int maxH = 16;
@@ -35,9 +32,10 @@ class Tile implements ImageObserver {
     
     public void drawTile(int i, int j, Vector2 v,Graphics g,float scale){
         Image b = Tile.dirtTexture;
-        g.drawImage(b, (int)v.x,(int)v.y,(int)(b.getWidth(this)*scale),(int)(b.getHeight(this)*scale),this);
+        g.drawImage(b, (int)v.x,(int)v.y,(int)(b.getWidth(this)*scale),(int)(b.getHeight(this)*scale),MiningPipes.imob);
         g.setColor(new Color(0,0,0,(int)(255-(height/Tile.maxH*255))));
         g.fillRect((int)v.x,(int)v.y,(int)(b.getWidth(this)*scale),(int)(b.getHeight(this)*scale));
+        
     }
 
     public void set(float h){
@@ -45,7 +43,7 @@ class Tile implements ImageObserver {
     }
 
     public void raise(float h){
-        height+=h;
+        height += h;
         height = Math.max(0, Math.min(height,maxH));
     }
     
@@ -57,8 +55,7 @@ class Tile implements ImageObserver {
     public static void loadContent(ImageLoader im)
     {
         try{
-        Graphics g = dirtTexture.getGraphics();
-        g.drawImage(im.loadImage(ImageLoader.TERRAIN,0,0),0,0,new Tile());
+        dirtTexture = (BufferedImage) im.loadImage(ImageLoader.TERRAIN,0,0);
         }
         
         catch(Exception e){System.out.println("tile load exception");
