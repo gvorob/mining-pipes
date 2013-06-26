@@ -40,8 +40,7 @@ public class TeslaTool extends Tool {
         }
     }
     
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p, boolean left, boolean down,Game tGame)
     {
-        
     }
 }

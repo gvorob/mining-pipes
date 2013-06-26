@@ -7,7 +7,6 @@ package miningpipes;
 import Util.StaticImageObserver;
 import Util.Timer;
 import Util.TimerListener;
-import Util.TimerMiddleman;
 import Util.Screen;
 import Util.Keyboard;
 import Util.Mouse;
@@ -31,7 +30,6 @@ public class MiningPipes implements TimerListener{
     public static Keyboard thisKeyboard;
     public static final int updateTime = 25;
     public static Timer theTimer;
-    public static TimerMiddleman tm;
     public static Screen theScreen;
     public static Game theGame;
     public static final int windowWidth = 1000;
@@ -47,16 +45,16 @@ public class MiningPipes implements TimerListener{
         cursor = t.getImage("src/cursor.png");
         thisKeyboard = new Keyboard();
         thisMouse = new Mouse();
-        theGame = new Game(thisMouse);
         
         theTimer = new Timer(updateTime);
         
         theScreen.c.addKeyListener(thisKeyboard);
         theScreen.c.addMouseListener(thisMouse);
         theScreen.c.addMouseMotionListener(thisMouse);
-        tm = new TimerMiddleman(theGame,theScreen);
-        
-        theTimer.addListener(tm);
+        theGame = new Game(thisMouse,theScreen);
+        thisMouse.addListener(theGame);
+        thisKeyboard.addListener(theGame);
+        theTimer.addListener(theGame);
         
         theGame.LoadContent(im);
         

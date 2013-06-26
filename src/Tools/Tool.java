@@ -7,13 +7,14 @@ package Tools;
 import Util.Mouse;
 import Util.ImageLoader;
 import java.awt.Image;
+import java.awt.Point;
 import miningpipes.Game;
 
 /**
  *
  * @author George
  */
-public class Tool {
+public abstract class Tool {
     
     public Image icon;
     public String name;
@@ -22,7 +23,7 @@ public class Tool {
         
     }
     
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p,boolean left,boolean down,Game tGame)
     {
         
     }

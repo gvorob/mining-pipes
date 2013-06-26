@@ -31,11 +31,13 @@ public class FliesTool extends Tool {
     }
     
     public void update(Mouse tMouse,Game tGame){}
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p, boolean left, boolean down,Game tGame)
     {
-        Point p =tMouse.get();
-        Vector2 v = new Vector2(p.x,p.y);
-        Vector2 tV = tGame.gridCoordFroomScreenCoord(v);
-        tGame.addEntity(new FliesEntity(tV));
+        if(left && down)
+        {
+            Vector2 v = new Vector2(p.x,p.y);
+            Vector2 tV = tGame.gridCoordFroomScreenCoord(v);
+            tGame.addEntity(new FliesEntity(tV));
+        }
     }
 }

@@ -6,6 +6,7 @@ package Tools;
 
 import Util.Mouse;
 import Util.ImageLoader;
+import java.awt.Point;
 import miningpipes.Game;
 import miningpipes.MiningPipes;
 
@@ -37,8 +38,7 @@ public class LowerTool extends Tool {
         }
     }
     
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p, boolean left, boolean down,Game tGame)
     {
-        
     }
 }

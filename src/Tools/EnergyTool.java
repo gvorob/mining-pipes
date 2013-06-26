@@ -32,7 +32,7 @@ public class EnergyTool extends Tool {
     {
         if(tMouse.getL())
         {
-            if (GeneratorStruct.canPlace(tGame,tMouse))
+            if (GeneratorStruct.canPlace(tGame,tMouse.get()))
             {
                 Point p = tMouse.get();
                 tGame.addStructure(new GeneratorStruct(tGame.tileFromMouseCoord(p)));
@@ -40,8 +40,7 @@ public class EnergyTool extends Tool {
         }
     }
     
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p, boolean left, boolean down,Game tGame)
     {
-        
     }
 }

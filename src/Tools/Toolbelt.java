@@ -9,6 +9,7 @@ import Util.Mouse;
 import Util.ImageLoader;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.lang.reflect.Array;
@@ -58,10 +59,10 @@ public class Toolbelt implements ImageObserver{
         tools[currTool].update(tMouse,tGame);        
     }
     
-    public void lClick(Mouse tMouse, Game tGame)
+    public void lClick(Point p,boolean left, boolean down, Game tGame)
     {
-        if(tGame.getTile(tGame.tileFromMouseCoord(tMouse.get()))!=null)
-        tools[currTool].lClick(tMouse,tGame);
+        if(tGame.getTile(tGame.tileFromMouseCoord(p))!=null)
+        tools[currTool].lClick(p,left,down,tGame);
     }
     
     public void draw(BufferedImage im)

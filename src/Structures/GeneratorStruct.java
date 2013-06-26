@@ -44,10 +44,9 @@ public class GeneratorStruct extends EnergyStructure{
         storedEnergy+=energyRate*tGame.timePerTick();
     }
     
-    public static boolean canPlace(Game tGame, Mouse tMouse)
+    public static boolean canPlace(Game tGame, Point pnt)
     {
-        Point m = tMouse.get();
-        Point p = tGame.tileFromMouseCoord(m);
+        Point p = tGame.tileFromMouseCoord(pnt);
         
         return !tGame.isObstructed(p.x,p.y);
         

@@ -22,18 +22,21 @@ import Entities.FliesEntity;
 import Power.PowerNet;
 import Util.BoundingBox;
 import Util.ImageLoader;
+import Util.Screen;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import javax.rmi.CORBA.UtilDelegate;
+import sun.text.normalizer.UCharacter;
 
 /**
  *
  * @author George
  */
-public final class Game implements ImageObserver{
+public final class Game implements ImageObserver,Util.MouseEventListener,Util.KeyEventListener,Util.TimerListener{
     public final int gridWidth = 100;
     public final int gridHeight = 100;
     public final float scaleFactor = 3;
@@ -49,15 +52,17 @@ public final class Game implements ImageObserver{
     Toolbelt tBelt;
     Grid tileGrid;
     Vector2 viewWindow;
-    BufferedImage currentState;
+    //BufferedImage currentState;
     StructArray structures;
     EntityArray entities;
     Mouse tMouse;
+    Screen tScreen;
     PowerNet pNet;
 
-    public Game(Mouse theMouse){
+    public Game(Mouse theMouse, Screen theScreen){
+        tScreen = theScreen;
         tMouse = theMouse;
-        tMouse.initGame(this);
+        tMouse.addListener(this);
         Initialize();
         LoadContent(new ImageLoader());
     }
@@ -66,7 +71,7 @@ public final class Game implements ImageObserver{
     {
         viewWindow = Vector2.Zero();
         tileGrid = new Grid(gridWidth, gridHeight);
-        currentState = new BufferedImage(viewSize.x,viewSize.y,BufferedImage.TYPE_4BYTE_ABGR);
+        //currentState = new BufferedImage(viewSize.x,viewSize.y,BufferedImage.TYPE_4BYTE_ABGR);
         tBelt = new Toolbelt();
         tBelt.add(new RaiseTool());
         tBelt.add(new LowerTool());
@@ -80,13 +85,14 @@ public final class Game implements ImageObserver{
         pNet = new PowerNet();
     }
 
-    public void keyPressed(KeyEvent e)
+    public boolean KeyChange(int kcode, boolean down)
     {
-
-        if (Character.isDigit(e.getKeyChar()))
+        
+        if (kcode >= KeyEvent.VK_0 && kcode <= KeyEvent.VK_9)
         {
-            tBelt.setTool(e.getKeyCode()-48);
+            tBelt.setTool(kcode - 48);
         }
+        return true;
     }
 
     protected void LoadContent(ImageLoader im)
@@ -126,12 +132,18 @@ public final class Game implements ImageObserver{
 
     }
 
-    public void lClick(Mouse tMouse)
+    public boolean mouseClicked(Point p, boolean left, boolean down)
     {
-        tBelt.lClick(tMouse, this);
+        tBelt.lClick(p,left,down,this);
+        return true;
+    }
+    
+    public boolean mouseMoved(int oldX, int oldY, int x, int y, boolean left, boolean right)
+    {
+        return true;
     }
 
-    public void update()
+    public void timerEvent()
     {
         
         tBelt.update(tMouse, this);
@@ -150,7 +162,7 @@ public final class Game implements ImageObserver{
         pNet.update(this);
         structures.update(this);
         entities.update(this);
-        Draw(currentState);
+        Draw(tScreen.buffer);//currentState);
     }
 
     public static float timePerTick()
@@ -160,7 +172,7 @@ public final class Game implements ImageObserver{
 
     protected void Draw(BufferedImage im)
     {
-        Graphics g = currentState.getGraphics();
+        Graphics g = im.getGraphics();
         tileGrid.Draw(im,viewWindow,viewWidth,viewHeight,scaleFactor,(int)(tileWidth*scaleFactor));
         tBelt.draw(im);
         structures.draw(im, this);
@@ -170,9 +182,10 @@ public final class Game implements ImageObserver{
         //Point p = tileGrid.tileFromScreenCoord(tMouse.get(),viewWindow,tP);
         //Point s = getScreenCoordFromTile(p.x, p.y);
         //g.drawRect(s.x, s.y,tP,tP);
+        tScreen.flushBuffer();
     }
 
-    public Image getCurrentState(){return currentState;}
+    //public Image getCurrentState(){return currentState;}
     public Tile getTile(Point p){return tileGrid.getTile(p);}
     public Point tileFromMouseCoord(Point p){return tileGrid.tileFromScreenCoord(p,viewWindow,(int)(tileWidth*scaleFactor));}
     public Vector2 gridCoordFroomScreenCoord(Vector2 v){return tileGrid.tileFromScreenCoord(v,viewWindow,(int)(tileWidth*scaleFactor));}

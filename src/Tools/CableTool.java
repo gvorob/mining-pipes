@@ -40,7 +40,7 @@ public class CableTool extends Tool {
         icon = im.loadImage(ImageLoader.TOOLS, 6, 0, 2, 2);
     }
     
-    public void lClick(Mouse tMouse,Game tGame)
+    public void lClick(Point p, boolean left, boolean down,Game tGame)
     {
         
     }

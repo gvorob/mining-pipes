@@ -7,9 +7,9 @@ package Util;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import javax.swing.event.MouseInputAdapter;
-import miningpipes.Game;
-
 
 
 /**
@@ -17,28 +17,22 @@ import miningpipes.Game;
  * @author George
  */
 public class Mouse extends MouseInputAdapter{
+    private ArrayList<MouseEventListener> listeners;
     private int x;
     private int y;
     private boolean l;
     private boolean r;
-    public Game tGame;
     
     public Mouse()
     {
-        
+        listeners = new ArrayList<MouseEventListener>();
     }
     
-    public void initGame(Game theGame)
-    {
-        if(tGame!=null)
-        {System.out.println("Game already initialized");
-        return;
-        }
-        
-        tGame = theGame;
-    }
+    public void addListener(MouseEventListener e){listeners.add(e);}    
+    public void removeListener(MouseEventListener e){listeners.remove(e);}
     
     public void mouseMoved(MouseEvent e){
+        informMoved(x,y,e.getX(),e.getY(),l,r);
         x=e.getX();
         y=e.getY();
     }
@@ -47,48 +41,53 @@ public class Mouse extends MouseInputAdapter{
         mouseMoved(e);
     }
     
-    public void checkGameInit()
-    {
-        if(tGame==null)System.out.println("Game not initialized");        
-    }
-    
     public void mousePressed(MouseEvent e){
         if(e.getButton()==MouseEvent.BUTTON1)
         {
             l=true;
-            checkGameInit();
-            tGame.lClick(this);
+            informClicked(x,y,true,true);
         }
         if(e.getButton()==MouseEvent.BUTTON3)
+        {
             r=true;
-        
+            informClicked(x,y,false,true);
+        }
     }
     
     public void mouseReleased(MouseEvent e){
         if(e.getButton()==MouseEvent.BUTTON1)
+        {
             l=false;
+            informClicked(x,y,true,false);
+        }
         if(e.getButton()==MouseEvent.BUTTON3)
+        {
             r=false;
+            informClicked(x,y,false,false);
+        }
     }
     
-    public int getX(){
-        return x;
-    }
-    
-    public int getY(){
-        return y;
-    }
-    
-    public Point get()
+    public void informClicked(int x, int y, boolean left, boolean down)
     {
-        return new Point(x,y);
+        ListIterator<MouseEventListener> i = listeners.listIterator();
+         while(i.hasNext())
+         {
+             i.next().mouseClicked(new Point(x,y), left, down);
+         }
     }
     
-    public boolean getL(){
-        return l;
+    public void informMoved(int oldX, int oldY, int x, int y, boolean left, boolean right)
+    {
+        ListIterator<MouseEventListener> i = listeners.listIterator();
+         while(i.hasNext())
+         {
+             i.next().mouseMoved(oldX, oldY, x, y, left, right);
+         }
     }
     
-    public boolean getR(){
-        return r;
-    }
+    public int getX()    {return x;}
+    public int getY()    {return y;}
+    public Point get()   {return new Point(x,y);}
+    public boolean getL(){return l;}
+    public boolean getR(){return r;}
 }
