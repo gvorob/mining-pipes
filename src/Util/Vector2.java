@@ -110,4 +110,9 @@ public class Vector2 {
         factor = length() == 0 ? 0 : factor;
         vecMult(factor);
     }
+    
+    public String toString()
+    {
+        return "x:" + String.valueOf(x) + ", y:" + String.valueOf(y);
+    }
 }

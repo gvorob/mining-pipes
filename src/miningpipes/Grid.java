@@ -1,5 +1,6 @@
 package miningpipes;
 
+import Util.Misc;
 import Util.Vector2;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -140,28 +141,22 @@ import java.awt.image.BufferedImage;
         {
             changeBlock(coords.x, coords.y, tile);
         }
-        public Point tileFromScreenCoord(Point coord, Vector2 viewWindow, int tP)
+        public Point tileFromScreenCoord(Point mouseCoord, Vector2 viewWindow, int tP)
         {
-            Point tileCoord = new Point();
-
-            tileCoord.x = coord.x;
-            tileCoord.y = coord.y;        
-
-            tileCoord.x /= tP;
-            tileCoord.x += viewWindow.x;
-            tileCoord.y /= tP;
-            tileCoord.y += viewWindow.y;
-
-            tileCoord.x = (int)Math.floor(tileCoord.x);
-            tileCoord.y = (int)Math.floor(tileCoord.y);
-            return tileCoord;
+            //Misc.prln("---");
+            //Misc.prln(viewWindow.toString());
+            Vector2 tileCoord = new Vector2(mouseCoord.x,mouseCoord.y);
+            tileCoord.vecMult(1 / (float) tP);
+            tileCoord.vecAdd(viewWindow);
+            
+            Point temp = new Point();
+            temp.x = (int)Math.floor(tileCoord.x);
+            temp.y = (int)Math.floor(tileCoord.y);
+            return temp;
         }
         public Vector2 tileFromScreenCoord(Vector2 coord, Vector2 viewWindow, int tP)
         {
-            Vector2 tileCoord = new Vector2(0,0);
-
-            tileCoord.x = coord.x;
-            tileCoord.y = coord.y;        
+            Vector2 tileCoord = new Vector2(coord.x,coord.y);
 
             tileCoord.x /= tP;
             tileCoord.x += viewWindow.x;
